@@ -418,6 +418,22 @@ st.dataframe(
     use_container_width=True
 )
 
+st.markdown(
+        """
+***n_obs = Number of recorded observations for a given region.***
+
+***weighted_pop = The recorded population for each region for each region at time of census.***
+
+***pct_uninsured = The percentage of a given region's population that is not insured.***
+
+***avg_povlev = Ratio of families/observations that live above the poverty level to those that do.***
+
+***pct_hs_or_less = Percentage of those within a region that only have a high school education or less.***
+
+***avg_health = Average health outcomes (1:Excellent, 2: Very Good, 3: Good, 4: Fair, 5: Poor)***
+        """
+    )
+
 # ----------------------------
 # Region Detail View (dropdown UNDER header + shows names)
 # ----------------------------
