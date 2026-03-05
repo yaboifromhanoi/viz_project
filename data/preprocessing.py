@@ -1,120 +1,118 @@
+from __future__ import annotations
+
+from pathlib import Path
+import zipfile
+import numpy as np
 import pandas as pd
 import geopandas as gpd
-import numpy as np
-import os
 
-import matplotlib.pyplot as plt
+# ----------------------------
+# Paths (all in same directory)
+# ----------------------------
+BASE_DIR = Path(__file__).resolve().parent
 
-current_wd = os.getcwd()
-print(f'Working directory is now: {current_wd}.')
+HEALTH_CSV = BASE_DIR /"health_outcomes.csv"
+STATES_DIR = BASE_DIR /"states"
+STATES_SHP = BASE_DIR /"states"/"tl_2024_us_state.shp"
 
-# Load data
-health_data = pd.read_csv('C:/Users/bdhuy/final-project-tiffany-tu-ben-huynh/data/health_outcomes.csv')
-states_gdf = gpd.read_file('C:/Users/bdhuy/final-project-tiffany-tu-ben-huynh/data/states/tl_2024_us_state.shp')
+REGION_NAME = {1: "Northeast", 2: "Midwest", 3: "South", 4: "West"}
 
-# Filter out non-continental states and territories
-all_states_gdf = states_gdf[~states_gdf['STUSPS'].isin(['AS', 'GU', 'MP', 'PR', 'VI'])]
-states_gdf = states_gdf[~states_gdf['STUSPS'].isin(['AS', 'GU', 'MP', 'PR', 'VI', 'AK', 'HI'])]
+# Census regions (contiguous only)
+NORTHEAST = {"CT","ME","MA","NH","RI","VT","NJ","NY","PA"}
+MIDWEST   = {"IL","IN","MI","OH","WI","IA","KS","MN","MO","NE","ND","SD"}
+SOUTH     = {"DE","FL","GA","MD","NC","SC","VA","DC","WV","AL","KY","MS","TN","AR","LA","OK","TX"}
+WEST      = {"AZ","CO","ID","MT","NV","NM","UT","WY","CA","OR","WA"}
 
-# Define regions; map states to regions for merging
-northeast = ['CT','ME','MA','NH','RI','VT','NJ','NY','PA']
-midwest = ['IL','IN','MI','OH','WI','IA','KS','MN','MO','NE','ND','SD']
-south = ['DE','FL','GA','MD','NC','SC','VA','DC','WV','AL','KY','MS','TN','AR','LA','OK','TX']
-west = ['AZ','CO','ID','MT','NV','NM','UT','WY','AK','CA','HI','OR','WA']
+def unzip_states_if_needed():
+    if STATES_SHP.exists():
+        return
 
-def assign_region(state):
-    if state in northeast:
-        return 1
-    elif state in midwest:
-        return 2
-    elif state in south:
-        return 3
-    elif state in west:
-        return 4
+    if not STATES_ZIP.exists():
+        raise FileNotFoundError("states.zip not found in project folder.")
 
-states_gdf['REGION'] = states_gdf['STUSPS'].apply(assign_region)
+    with zipfile.ZipFile(STATES_ZIP, "r") as z:
+        z.extractall(BASE_DIR)
 
-# Dissolve to regions
-regions_gdf = states_gdf.dissolve(by='REGION').reset_index()
+    if not STATES_SHP.exists():
+        raise FileNotFoundError("Shapefile not found after unzip. Check zip structure.")
 
-# Recoding health insurance status
-health_data['INSURANCE'] = np.where(
-    health_data['HINOTCOV'] == 1, 0,
-    np.where(health_data['HINOTCOV'] == 2, 1, np.nan)
-)
+def stusps_to_region(st):
+    if st in NORTHEAST: return 1
+    if st in MIDWEST: return 2
+    if st in SOUTH: return 3
+    if st in WEST: return 4
+    return np.nan
 
-# Aggregate data by insurance status by region
-region_insurance_summary = (
-    health_data
-    .groupby('REGION')
-    .agg(
-        num_insured=('INSURANCE', 'sum'),
-        total_pop=('INSURANCE', 'count')
+def weighted_mean(x, w):
+    mask = x.notna() & w.notna()
+    if mask.sum() == 0:
+        return np.nan
+    return np.average(x[mask], weights=w[mask])
+
+def main():
+
+    if not HEALTH_CSV.exists():
+        raise FileNotFoundError("health_outcomes.csv not found.")
+
+    unzip_states_if_needed()
+
+    # ---- Load data ----
+    df = pd.read_csv(HEALTH_CSV)
+    df.columns = df.columns.str.strip()
+
+    df["REGION"] = pd.to_numeric(df["REGION"], errors="coerce")
+    df["SAMPWEIGHT"] = pd.to_numeric(df["SAMPWEIGHT"], errors="coerce")
+
+    # Insurance coding
+    df["insured"] = np.where(df["HINOTCOV"] == 2, 1,
+                      np.where(df["HINOTCOV"] == 1, 0, np.nan))
+
+    # HS or less (your rule)
+    df["hs_or_less"] = np.where(
+        (df["EDUC"] == 0) | (df["EDUC"] > 900),
+        np.nan,
+        np.where(df["EDUC"] < 300, 1, 0),
     )
-    .reset_index()
-)
 
-# Calculate uninsured and percentage uninsured
-region_insurance_summary['num_uninsured'] = (
-    region_insurance_summary['total_pop'] -
-    region_insurance_summary['num_insured']
-)
+    # ---- Aggregate by region ----
+    def agg(g):
+        w = g["SAMPWEIGHT"]
+        insured_rate = weighted_mean(g["insured"], w)
 
-region_insurance_summary['pct_uninsured'] = (
-    region_insurance_summary['num_uninsured'] /
-    region_insurance_summary['total_pop']
-)
+        return pd.Series({
+            "n_obs": len(g),
+            "weighted_pop": w.sum(),
+            "pct_uninsured": 1 - insured_rate if pd.notna(insured_rate) else np.nan,
+            "avg_educ": weighted_mean(g["EDUC"], w),
+            "pct_hs_or_less": weighted_mean(g["hs_or_less"], w),
+            "avg_povlev": weighted_mean(g["POVLEV"], w),
+            "avg_health": weighted_mean(g["HEALTH"], w),
+        })
 
-# Aggregate data by education level by region
-health_data['HS_OR_LESS'] = np.where(
-    (health_data['EDUC'] == 0) | (health_data['EDUC'] > 900), np.nan,
-    np.where(health_data['EDUC'] < 300, 1, 0)
-)
+    metrics = df.groupby("REGION", dropna=True).apply(agg).reset_index()
+    metrics["region_name"] = metrics["REGION"].map(REGION_NAME)
 
-region_educ_summary = (
-    health_data
-    .groupby('REGION')
-    .agg(avg_educ=('EDUC', 'mean'),
-         num_hs_or_less=('HS_OR_LESS', 'sum'))
-    .reset_index()
-)
+    metrics.to_parquet(BASE_DIR / "region_metrics.parquet", index=False)
 
-# Merge with geospatial data
-educ_gdf = regions_gdf.merge(region_educ_summary, on='REGION', how='left')
-insurance_gdf = regions_gdf.merge(region_insurance_summary, on='REGION', how='left')
+    # ---- Build region geometries ----
+    states = gpd.read_file(STATES_SHP)
 
-# Plot number of insured individuals
-fig, ax = plt.subplots(figsize=(12, 8))
+    drop_st = {"AS","GU","MP","PR","VI","AK","HI"}
+    states = states[~states["STUSPS"].isin(drop_st)].copy()
 
-insurance_gdf.plot(
-    column="pct_uninsured",
-    legend=True,
-    cmap="viridis",
-    ax=ax
-)
+    states["REGION"] = states["STUSPS"].map(stusps_to_region)
+    states = states.dropna(subset=["REGION"])
+    states["REGION"] = states["REGION"].astype(int)
 
-insurance_gdf.boundary.plot(ax=ax, color="black", linewidth=0.8)
+    regions = states.dissolve(by="REGION", as_index=False)
+    regions["region_name"] = regions["REGION"].map(REGION_NAME)
+    regions["geometry"] = regions["geometry"].buffer(0)
 
-ax.set_title("Percentage of Uninsured Individuals by Region", fontsize=18)
-ax.set_axis_off()
+    regions.to_parquet(BASE_DIR / "regions.gpq", index=False)
 
-plt.show()
+    print("Files created in project folder:")
+    print(" - region_metrics.parquet")
+    print(" - regions.gpq")
 
-# Plot average educational attainment
-fig, ax = plt.subplots(figsize=(12, 8))
-
-educ_gdf.plot(
-    column="avg_educ",
-    legend=True,
-    cmap="plasma",
-    ax=ax
-)
-
-educ_gdf.boundary.plot(ax=ax, color="black", linewidth=0.8)
-
-ax.set_title("Average Education Level by Region", fontsize=18)
-ax.set_axis_off()
-
-plt.show()
-
-
+if __name__ == "__main__":
+    main()
