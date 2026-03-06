@@ -506,4 +506,8 @@ metrics.set_index("region_name")[metric_col].plot(kind="bar", ax=ax_bar)
 ax_bar.set_ylabel(metric_label)
 ax_bar.set_xlabel("")
 st.pyplot(fig_bar)
+<<<<<<< HEAD
 plt.close(fig_bar)
+=======
+plt.close(fig_bar)
+>>>>>>> 3c8319e8cff226e1cc1e82530ba1bf51f40c62a3
