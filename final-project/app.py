@@ -354,6 +354,17 @@ with right:
 st.divider()
 
 # ----------------------------
+# Bar Chart by Region
+# ----------------------------
+st.subheader("Bar Chart by Region")
+fig_bar, ax_bar = plt.subplots(figsize=(10, 4))
+metrics.set_index("region_name")[metric_col].plot(kind="bar", ax=ax_bar)
+ax_bar.set_ylabel(selected_metric)
+ax_bar.set_xlabel("")
+st.pyplot(fig_bar)
+plt.close(fig_bar)
+
+# ----------------------------
 # Searchable Table
 # ----------------------------
 st.subheader("Region Summary Table")
@@ -455,19 +466,6 @@ with c2:
         ax_h.set_ylabel("Count")
         st.pyplot(fig_h)
         plt.close(fig_h)
-
-st.divider()
-
-# ----------------------------
-# Bar Chart by Region
-# ----------------------------
-st.subheader("Bar Chart by Region")
-fig_bar, ax_bar = plt.subplots(figsize=(10, 4))
-metrics.set_index("region_name")[metric_col].plot(kind="bar", ax=ax_bar)
-ax_bar.set_ylabel(selected_metric)
-ax_bar.set_xlabel("")
-st.pyplot(fig_bar)
-plt.close(fig_bar)
 
 st.divider()
 st.markdown(
