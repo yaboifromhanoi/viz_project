@@ -1,0 +1,148 @@
+---
+title: "Regional Disparities in Health Insurance Coverage and Self-Reported Health in the United States"
+authors: 
+- "Benjamin Huynh (yaboifromhanoi)"
+- "Tiffany Tu (tiffany-tu807)"
+format:
+  html:
+    toc: false
+    number-sections: false
+  pdf:
+    toc: false
+    number-sections: false 
+execute:
+  echo: false
+  warning: false
+  message: false
+
+fontsize: 12pt
+geometry: margin=0.6in
+---
+# Introduction
+
+Regional disparities in health outcomes remain a distinct and persistent issue within the United States. 
+
+Differences in socioeconomic status, race, and geographic region contribute to disparities in insurance coverage and overall health status in their own respective ways as we have seen not just within this data but also from lectures and general anecdotal experiences.
+
+Understanding how these patterns vary across demographic groups and geographic regions can help inform public policy and health system interventions.
+
+This project analyzes regional variation in health outcomes using data from the National Health Interview Survey (NHIS). 
+
+The primary research question guiding this project is:
+
+**How do insurance coverage and self-reported health outcomes vary across U.S. regions and demographic groups?**
+
+To explore this question, we combine microdata from the NHIS with geographic data representing U.S. Census regions. The analysis examines how insurance coverage, poverty levels, and self-reported health status vary across regions and demographic categories such as race, education, and socioeconomic circumstances.
+
+The project showcases two static visualizations and an interactive Streamlit dashboard that allows users to make observations in a dynamic manner.
+
+# Data
+
+This project uses two primary datasets.
+
+## NHIS Microdata
+
+The first dataset comes as part of  IPUMS Health Surveys, more specifically, the National Health Interview Survey (NHIS).
+
+NHIS is a nationally representative survey conducted by the National Center for Health Statistics that collects information on health status, health care access, and demographic characteristics of individuals in the United States.
+
+The dataset includes the following key variables kept track of by NHIS that were then used for this project:
+
+- `REGION` — Census region of residence
+- `RACENEW` — Self-reported race (post-1997 OMB standards)
+- `SEX` — Respondent's sex
+- `EDUC` — Education attainment of respondent
+- `POVLEV` — Household income relative to the federal poverty line (displayed as a ratio)
+- `HEALTH` — Respondent's self-reported health status
+- `HINOTCOV` — Indicator variable detailing whether the respondent has health insurance coverage or not.
+- `USUALPL` — Binary indicator of whether the respondent has a usual place for medical care
+- `DELAYCOST` — Whether care was delayed due to cost
+
+Survey weights (`SAMPWEIGHT`) are used to compute weighted regional statistics to better represent the national population through the compiled dataset.
+
+## Geographic Data
+
+The second dataset consists of geographic boundary data for U.S. states drawn from TIGER, which were aggregated into the four Census regions typically that are also acknowledged socially as such, respectively:
+
+- Northeast
+- Midwest
+- South
+- West
+
+These geographic boundaries are used to create spatial visualizations that illustrate regional variation in health outcomes.
+
+# Data Processing
+
+Before analysis could be conducted, several pre-processing steps were necessary  to clean and standardize the data.
+
+Firstly, numeric variables that were used to indicate qualitative aspects such as race or educational attainment were converted into appropriate formats to ensure compatibility with the analysis tools we used. Several derived variables were also created to simplify interpretation in the dashboard.
+
+For instance, an insurance indicator was also constructed from the NHIS insurance variable, where respondents coded as having insurance coverage were assigned a value of 1, while those without insurance were assigned a value of 0.
+
+Education levels were also simplified into broader categories for easier interpretation for reading purposes. Respondents were grouped into categories such as **High school or less**, **Some college**, and **Bachelor's degree or higher**.
+
+Income levels were categorized using the `POVLEV` variable from NHIS, which is used to measure household income relative to the federal poverty line. We then grouped these values into 3 standard policy categories such as:
+
+- below the poverty line
+- near-poor households
+- middle-income households
+
+Finally, survey weights were then applied for calculating summary statistics to produce population-representative estimates.
+
+# Static Visualizations
+
+Two static visualizations were produced from our dynamic filtering option on our streamlit app to help summarize key findings.
+
+## Regional Uninsurance Rates
+
+The first figure shows the percentage of individuals without health insurance across the four Census regions. The results indicate that uninsurance rates, initially looking minimal, actually vary substantially by region relative to each other. In particular, the Midwest region is shownto exhibit higher rates of uninsurance, while the South generally shows lower rates among the four.
+
+These differences most likely reflect variation in economic conditions, demographic composition, and policy environments across the respective regions.
+
+![Regional uninsurance rates by census region.](uninsured.png)
+
+## Regional Map of Health Outcomes
+
+The second visualization is a spatial map displaying regional variation in selected health metrics. By aggregating survey data to the Census region level and joining these values to geographic boundary data, the map highlights geographic disparities in health indicators.
+
+Spatial visualization makes it easier to observe patterns that may not be obvious in tabular summaries alone. For example, certain regions may simultaneously experience higher poverty levels and lower rates of insurance coverage.
+
+![Regional Display of Self-Ratings.](healthratings.png)
+
+# Interactive Dashboard
+
+As mentioned prior in the section showcasing static visualizations, this project includes an interactive Streamlit dashboard that allows users to dynamically filter data how they see fit.
+
+The dashboard provides the following interactive features:
+
+- Filters for region, race, income level, education level, and insurance status
+- A choropleth map displaying regional health statistics
+- A searchable table summarizing regional statistics
+- A Region Detail View that displays weighted summary statistics for a selected region
+- Interactive charts showing distributions of insurance coverage and other variables
+
+These allow interested users to specifically tailor how they explore health outcomes and how they change when different demographic filters are applied. For example, users can examine how insurance coverage varies across income groups or how self-reported health differs across regions, or otherwise investigate patterns that may not be immediately visible in a single figure.
+
+# Limitations
+
+Several limitations had to be reconciled in regard to compiling this project and interpreting the final results.
+
+First, this analysis used cross-sectional survey data, meaning it reflects conditions at the specific point of 2024, rather than any gradual changes over time. As a result, this analysis should not be used to determine causal relationships between variables.
+
+Second, the analysis aggregated individuals into broad geographic regions as a result of the NHIS data being stratified as such. While this seemingly simplifies interpretation to an extent, this also prevents us from noting deeper and more important variation within regions at the state or county level.
+
+Third, all the survey responses relied on self-reported responses, such as health status, which potentially introduces reporting bias.
+
+Finally, although survey weights are used to mitigate any issues with representation of the population, other aspects of complex survey design that we were hoping to replicate from previous assignments and classes, such as clustering and stratification, were not fully incorporated in this analysis.
+
+# Conclusion
+
+This project examined regional disparities in health insurance coverage and self-reported health outcomes using data from the National Health Interview Survey and TIGER.
+
+The results suggest that, although the differences are small across the regions, there is a considerable degree of variation that exists across regions in measures such as insurance coverage and health status, relative between each region.
+
+Socioeconomic factors such as income and education also appear to play an important role in shaping behaviors that ultimately influence health outcomes.
+
+The interactive dashboard we developed in this project allows users to specifically tailor how they explore the relationships of the given variables in greater detail by applying demographic and geographic filters.
+
+Future policy regarding healthcare within the United States should still prioritize mitigating the difference in ease of attaining optimal health outcomes across the regions, regardless of whether or not the actual quantitative differences among the regions can be perceived as miniscule.
