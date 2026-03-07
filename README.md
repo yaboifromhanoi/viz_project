@@ -114,14 +114,13 @@ Note that some of these variables were automatically included in the dataset by 
 
 ## Usage
 
-1. Run preprocessing to raw data:
+1. Run preprocessing to raw data (located in viz_project/data):
    ```bash
-   python ~/viz_project/data/preprocessing.py
+   python preprocessing.py
    ```
 
-2 Run streamlit
+2 Run streamlit after setting directory to viz_project/streamlit-app
    ```bash
-  cd ~/viz_project/streamlit-app
   streamlit run app.py
    ```
 ## NOTE
