@@ -95,7 +95,9 @@ Two static visualizations were produced from our dynamic filtering option on our
 
 ## Regional Uninsurance Rates
 
-The first figure shows the percentage of individuals without health insurance across the four Census regions. The results indicate that uninsurance rates, initially looking minimal, actually vary substantially by region relative to each other. In particular, the Midwest region is shownto exhibit higher rates of uninsurance, while the South generally shows lower rates among the four.
+The first figure shows the percentage of individuals without health insurance across the four Census regions. The results indicate that the uninsurance rates shown, initially seeming minimal, actually vary substantially by region relative to each other. 
+
+In particular, the South region is shown to exhibit higher rates of uninsurance at nearly 0.1%, while the Northeast generally shows lower rates of uninsurance at 0.04% among the four regions.
 
 These differences most likely reflect variation in economic conditions, demographic composition, and policy environments across the respective regions.
 
