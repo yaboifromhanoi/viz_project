@@ -86,20 +86,7 @@ ul.task-list li input[type="checkbox"] {
 <p>This project uses two primary datasets.</p>
 <section id="nhis-microdata" class="level2">
 <h2 class="anchored" data-anchor-id="nhis-microdata">NHIS Microdata</h2>
-<p>Firstly, we sourced data from the National Health Interview Survey (NHIS) as part of the larger IPUMS Health Surveys database. NHIS is a nationally representative survey conducted by the National Center for Health Statistics that collects information on health status, health care access, and demographic characteristics of individuals in the United States.</p>
-<p>We primarily focused on the following variables in our analysis:</p>
-<ul>
-<li><code>REGION</code> — Census region of residence</li>
-<li><code>RACENEW</code> — Self-reported race (post-1997 OMB standards)</li>
-<li><code>SEX</code> — Respondent’s sex</li>
-<li><code>EDUC</code> — Education attainment of respondent</li>
-<li><code>POVLEV</code> — Household income relative to the federal poverty line (displayed as a ratio)</li>
-<li><code>HEALTH</code> — Respondent’s self-reported health status</li>
-<li><code>HINOTCOV</code> — Indicator variable detailing whether the respondent has health insurance coverage or not.</li>
-<li><code>USUALPL</code> — Binary indicator of whether the respondent has a usual place for medical care</li>
-<li><code>DELAYCOST</code> — Whether care was delayed due to cost</li>
-</ul>
-<p>Survey weights (<code>SAMPWEIGHT</code>) are used to compute weighted regional statistics to better represent the national population through the compiled dataset.</p>
+<p>Firstly, we sourced data from the National Health Interview Survey (NHIS) as part of the larger IPUMS Health Surveys database. NHIS is a nationally representative survey conducted by the National Center for Health Statistics that collects information on health status, health care access, and demographic characteristics of individuals in the United States. Survey weights are used to compute weighted regional statistics to better represent the national population through the compiled dataset.</p>
 </section>
 <section id="geographic-data" class="level2">
 <h2 class="anchored" data-anchor-id="geographic-data">Geographic Data</h2>
@@ -113,23 +100,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Finally, survey weights were then applied for calculating summary statistics to produce population-representative estimates.</p>
 <section id="regional-uninsurance-rates" class="level2">
 <h2 class="anchored" data-anchor-id="regional-uninsurance-rates">Regional Uninsurance Rates</h2>
-<p>The first figure shows the percentage of individuals without health insurance across the four Census regions. Although the differences may not appear significant initially, the results indicate that the rates of uninsured individuals vary substantially when compared across the regions. In particular, average rates of uninsured individuals are especially high in the South at nearly 0.1%, whereas the Northeast generally shows lower rates of uninsurance around 0.04% on average. These differences most likely reflect variation in economic conditions, demographic composition, and policy environments across the respective regions.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="uninsured.png" class="img-fluid figure-img"></p>
-<figcaption>Regional uninsurance rates by census region.</figcaption>
-</figure>
-</div>
-</section>
-<section id="regional-map-of-health-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="regional-map-of-health-outcomes">Regional Map of Health Outcomes</h2>
-<p>The second visualization is a spatial map displaying regional variation in selected health metrics. By aggregating survey data to the Census region level and joining these values to geographic boundary data, the map highlights geographic disparities in health indicators.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="healthratings.png" class="img-fluid figure-img"></p>
-<figcaption>Regional Display of Self-Ratings.</figcaption>
-</figure>
-</div>
+<p>Our first analysis involved plotting the rate of uninsured individuals across the four Census regions Although the differences may not appear significant initially, the results indicate that the rates of uninsured individuals vary substantially when compared across the regions. In particular, average rates of uninsured individuals are especially high in the South at nearly 0.1%, whereas the Northeast generally shows lower rates of uninsurance around 0.04% on average. These differences most likely reflect variation in economic conditions, demographic composition, and policy environments across the respective regions. These outcomes were visualized using both a bar graph and a chloropleth map to better illustrate the regional disparities in insurance coverage.</p>
 </section>
 </section>
 <section id="interactive-dashboard" class="level1">
