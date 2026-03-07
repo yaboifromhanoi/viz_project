@@ -121,7 +121,7 @@ Note that some of these variables were automatically included in the dataset by 
 
 2 Run streamlit
    ```bash
-  cd ~/viz_project/final-project
+  cd ~/viz_project/streamlit-app
   streamlit run app.py
    ```
 ## NOTE
