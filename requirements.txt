@@ -3,5 +3,4 @@ pandas
 numpy
 geopandas
 matplotlib
-os
 pathlib
