@@ -116,12 +116,13 @@ Note that some of these variables were automatically included in the dataset by 
 
 1. Run preprocessing to raw data:
    ```bash
-   python code/preprocessing.py
+   python ~/viz_project/data/preprocessing.py
    ```
 
 2 Run streamlit
    ```bash
-  streamlit run code/app.py
+  cd ~/viz_project/final-project
+  streamlit run app.py
    ```
 ## NOTE
 Streamlit apps need to be “woken up”
