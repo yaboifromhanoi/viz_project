@@ -42,23 +42,6 @@ writeup/
 	writeup.pdf
 	writeup.qmd
 
-writeup_html_files/
-	libs/
-		bootstrap/
-				bootstrap.min.css
-				bootstrap.min.js
-				bootstrap-icons.css
-				bootstrap-icons.woff
-		clipboard/	
-				clipboard.min.js
-		quarto-html/ 
-				anchor.min.js
-				popper.min.js
-				quarto.js
-				quarto-syntax-highlighting.css
-				tippy.css
-				tippy.umd.min.js
-.DS_Store
 .gitignore
 environment.yml
 		
