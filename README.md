@@ -121,3 +121,6 @@ Note that some of these variables were automatically included in the dataset by 
 2 Run streamlit
   streamlit run code/app.py
    ```
+## NOTE
+Streamlit apps need to be “woken up”
+if they have not been run in the last 24 hours.
