@@ -160,7 +160,7 @@ educ_gdf = regions_gdf.merge(region_educ_summary, on='REGION', how='left')
 insurance_gdf = regions_gdf.merge(region_insurance_summary, on='REGION', how='left')
 
 # Save processed data
-health_data.to_csv('derived-data/health_data_clean.csv', index=False)
-regions_gdf.to_file('derived-data/regions_gdf_clean.geojson', driver='GeoJSON')
-educ_gdf.to_file('derived-data/educ_gdf_clean.geojson', driver='GeoJSON')
-insurance_gdf.to_file('derived-data/insurance_gdf_clean.geojson', driver='GeoJSON')
+health_data.to_csv('data/derived-data/health_data_clean.csv', index=False)
+regions_gdf.to_file('data/derived-data/regions_gdf_clean.geojson', driver='GeoJSON')
+educ_gdf.to_file('data/derived-data/educ_gdf_clean.geojson', driver='GeoJSON')
+insurance_gdf.to_file('data/derived-data/insurance_gdf_clean.geojson', driver='GeoJSON')
